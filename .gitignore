@@ -1,0 +1,6 @@
+*.pkl
+*.csv
+*.mp3
+*.wav
+*.zip
+__pycache__/

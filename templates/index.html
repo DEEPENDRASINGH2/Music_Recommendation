@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🎧 Neon AI Music Recommender</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <h1 class="glow">🎧 Neon Music AI</h1>
+    <p class="subtitle">Search any song 🌍 | Smart AI + YouTube Powered</p>
+
+    <!-- SEARCH -->
+    <form id="searchForm" action="/recommend" method="post" class="search-box">
+
+        <input type="text" id="searchBox" name="song"
+            placeholder="Search song, artist, Hindi, Punjabi..."
+            autocomplete="off" required>
+
+        <button type="submit" class="btn neon-btn">🔍</button>
+        <button type="button" onclick="startVoice()" class="btn neon-btn">🎤</button>
+
+    </form>
+
+    <!-- MOODS -->
+    <div class="moods">
+        <button type="button" onclick="setMood('happy')" class="neon-chip">😊 Happy</button>
+        <button type="button" onclick="setMood('sad')" class="neon-chip">😢 Sad</button>
+        <button type="button" onclick="setMood('love')" class="neon-chip">❤️ Love</button>
+        <button type="button" onclick="setMood('party')" class="neon-chip">🎉 Party</button>
+    </div>
+
+    <!-- Suggestions -->
+    <div id="suggestions"></div>
+
+    <!-- =========================
+         🎬 PLAYER FIRST
+    ========================= -->
+    {% if songs and songs[0].embed %}
+    <div class="player-box">
+        <iframe
+            width="100%"
+            height="320"
+            src="{{ songs[0].embed }}"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+        </iframe>
+
+        <!-- fallback button -->
+        <div class="player-actions">
+            <button onclick="openSong('{{ songs[0].youtube }}')" class="btn neon-btn">
+                ▶ Open in YouTube
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- =========================
+         🎧 RECOMMENDATIONS
+    ========================= -->
+    {% if songs %}
+    <h2 class="section-title">🎧 Recommendations</h2>
+
+    <div class="results">
+
+        {% for s in songs %}
+        <div class="card neon-card">
+
+            <div class="img-wrapper" onclick="openSong('{{ s.youtube }}')">
+                <img src="{{ s.image }}" loading="lazy">
+                <div class="play-overlay">▶</div>
+            </div>
+
+            <div class="info">
+                <h3>{{ s.song }}</h3>
+                <p class="artist">{{ s.artist }}</p>
+
+                <div class="btn-group">
+                    <button type="button" onclick="playSong('{{ s.song }}')" class="btn neon-btn">
+                        🔎 Search
+                    </button>
+                    <button type="button" onclick="openSong('{{ s.youtube }}')" class="btn neon-btn">
+                        ▶ Play
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+
+    <!-- =========================
+         🔥 TRENDING LAST
+    ========================= -->
+    {% if trending %}
+    <h2 class="section-title">🔥 Trending Songs</h2>
+
+    <div class="results">
+
+        {% for t in trending %}
+        <div class="card neon-card">
+
+            <div class="img-wrapper" onclick="openSong('{{ t.youtube }}')">
+                <img src="{{ t.image }}" loading="lazy">
+                <div class="play-overlay">▶</div>
+            </div>
+
+            <div class="info">
+                <h3>{{ t.song }}</h3>
+                <p class="artist">{{ t.artist }}</p>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
